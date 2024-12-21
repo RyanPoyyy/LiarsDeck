@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import BackCard from "./components/Card";
 import Player from "./components/Player";
 import OtherCard from "./components/OtherCard";
+import OtherPlayer from "./components/OtherPlayer";
+import PlayerAction from "./components/PlayerAction";
+import HistoryArea from "./components/HistoryArea";
+import RuleText from "./components/RuleText";
+import Logo from "./components/Logo";
 
 function App() {
   const [flip, setFlip] = useState(false);
@@ -31,12 +36,39 @@ function App() {
   }, [selectedCards]);
 
   const cards = ["Jack", "Queen", "King", "Joker", "Jack"];
+  const actions = [
+    {
+      playerName: "Rapie",
+      cardsPlayed: ["Jack", "Queen", "King"],
+    },
+  ];
+
+  // Challenge logic:
+  const [isChallenged, setIsChallenged] = useState(false);
+  const handleChallenge = () => {
+    console.log("Challenge");
+    setIsChallenged(!isChallenged);
+  };
+  useEffect(() => {
+    console.log(isChallenged);
+  }, [isChallenged]);
   return (
     <>
-      <OtherCard back={flip} name={"Jack"} />
-      <OtherCard back={flip} name={"Queen"} />
-      <OtherCard back={flip} name={"King"} />
-      <OtherCard back={flip} name={"Joker"} />
+      <Logo />
+      <HistoryArea
+        actions={actions}
+        isChallenged={isChallenged}
+        liarCard="Joker"
+      />
+      <RuleText liarCard="Queen" />
+      <OtherPlayer
+        playerObj={{}}
+        playerName="Caitlin"
+        isAlive={true}
+        cards={cards}
+        lives={6}
+        isTurn={true}
+      />
       <h1 onClick={() => flipMe()}>CLICK</h1>
       <br />
       <br />
@@ -49,6 +81,12 @@ function App() {
         lives={6}
         selectedCards={selectedCards}
         onClick={handleCardSelection}
+      />
+      <PlayerAction
+        selectedCards={selectedCards}
+        isTurn={true}
+        playClick={() => console.log("Play")}
+        challengeClick={() => handleChallenge()}
       />
     </>
   );
