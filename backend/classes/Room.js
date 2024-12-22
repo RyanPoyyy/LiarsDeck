@@ -66,9 +66,9 @@ class Room {
         return {
           playerId: player.playerId,
           playerName: player.playerName,
-          playerCards: player.cards,
-          isAlive: player.isAlive,
-          playerLives: player.lives.length,
+          // playerCards: player.cards,
+          // isAlive: player.isAlive,
+          // playerLives: player.lives,
           isHost: player instanceof Host ? true : false,
         };
       }),

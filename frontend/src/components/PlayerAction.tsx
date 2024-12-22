@@ -14,7 +14,7 @@ const PlayerAction: FC<Props> = ({
   challengeClick,
 }) => {
   return (
-    <div className="flex justify-center mt-2 space-x-4">
+    <div className="flex justify-center mt-2 space-x-4 mx-auto mb-4">
       {/* Play Button */}
       <button
         onClick={playClick}

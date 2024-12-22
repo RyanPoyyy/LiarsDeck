@@ -4,8 +4,10 @@
 @tailwind utilities;
 
 html {
-  @apply text-black;
+  /* @apply text-black bg-[url("/img/background.jpg")]; */
+  @apply text-black bg-blue-950;
   font-family: "Inter", serif;
+  color: white;
 }
 
 .writing-vertical {
@@ -14,14 +16,18 @@ html {
 }
 
 .card {
-  @apply w-14 h-20 bg-slate-200 border-2 border-black rounded mobile:w-20 mobile:h-32;
+  /* @apply w-14 h-20 bg-slate-200 border-2 border-black rounded mobile:w-20 mobile:h-32; */
+  @apply w-12 h-16 bg-slate-200 border-2 border-black rounded;
+
   perspective: 1000px;
   transform-style: preserve-3d;
   transition: transform 1s;
 }
 
 .your-card {
-  @apply w-14 h-20 bg-slate-200 border-2 border-black rounded mobile:w-20 mobile:h-32;
+  /* @apply w-14 h-20 bg-slate-200 border-2 border-black rounded mobile:w-20 mobile:h-32; */
+  @apply w-12 h-16 bg-slate-200 border-2 border-black rounded;
+
   perspective: 1000px;
   transform-style: preserve-3d;
   transition: transform 0.3s, border-color 0.3s;
@@ -79,13 +85,63 @@ img {
 }
 
 .info-row {
-  @apply flex items-center justify-center mx-auto mt-3;
+  @apply flex items-center justify-center mx-auto mt-2;
 }
 
 .player-name {
-  @apply mobile:text-2xl text-xl text-black font-bold;
+  /* @apply mobile:text-2xl text-xl text-black font-bold; */
+  @apply text-base text-white font-bold;
+}
+
+.player-name.isturn {
+  /* text-shadow: 2px 2px 5px yellow; */
 }
 
 .info {
   @apply ml-4;
+}
+
+.right-screen2 {
+  position: relative;
+  float: right;
+  margin-right: 8px;
+  -moz-transform: rotate(270deg); /* FF3.5+ */
+  -o-transform: rotate(270deg); /* Opera 10.5 */
+  -webkit-transform: rotate(-90deg); /* Saf3.1+, Chrome */
+  -moz-transform-origin: 100% 100%;
+  -o-transform-origin: 100% 100%;
+  -webkit-transform-origin: 100% 100%;
+}
+
+.right-screen {
+  position: absolute; /* Position the element relative to the parent container */
+  right: 0; /* Align to the right edge of the screen or parent container */
+  top: 50%; /* Start positioning from the middle of the screen */
+  transform: translateY(-50%) translateX(30%) rotate(-90deg); /* Center vertically and rotate the element */
+}
+
+.left-screen {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(-30%) rotate(90deg);
+}
+
+.top-screen {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  right: 0;
+}
+
+.bottom-screen {
+  @apply absolute bottom-0 left-0 right-0;
+}
+
+.player-box {
+  @apply relative w-[90%] border-[2px] border-gray-500 h-fit p-2 rounded-xl mx-auto;
+}
+
+.player-box.isturn {
+  @apply border-yellow-200 shadow-yellow-100 shadow-2xl;
 }

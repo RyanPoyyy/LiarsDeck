@@ -6,7 +6,7 @@ interface Props {
 
 const RuleText: FC<Props> = ({ liarCard }) => {
   return (
-    <div className="flex justify-center mt-2">
+    <div className="flex justify-center mt-2 border-t border-gray-300">
       <span className={"text-red-500 mobile:text-xl text-lg font-extrabold"}>
         {liarCard}'s &nbsp;
       </span>

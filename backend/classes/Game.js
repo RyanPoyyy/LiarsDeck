@@ -17,16 +17,16 @@ class Game {
   actions;
 
   constructor(players) {
-    this.deck = new Deck();
     this.players = players;
-    const cardTypes = ["Ace", "King", "Queen"];
-    this.liarCard = cardTypes[Math.floor(Math.random() * cardTypes.length)];
-    this.currentTurnIndex = 0;
-    this.actions = [];
     this.dealCards();
   }
 
   dealCards() {
+    this.deck = new Deck();
+    const cardTypes = ["Ace", "King", "Queen"];
+    this.liarCard = cardTypes[Math.floor(Math.random() * cardTypes.length)];
+    this.currentTurnIndex = 0;
+    this.actions = [];
     this.players.forEach((player) => {
       if (player.isAlive) {
         player.cards = this.deck.dealCards(5);
@@ -42,17 +42,32 @@ class Game {
     return this.players.find((player) => player.playerId == playerId);
   }
 
-  getGameState() {
+  getGameState(playerId) {
+    // TODO: Map the array to rearrange array
+    const yourIndex = this.players.findIndex(
+      (player) => player.playerId === playerId
+    );
+    const temp = this.players.map((player, index) => ({
+      ...player,
+      isHost: player instanceof Host ? true : false,
+      isTurn: index === this.currentTurnIndex,
+    }));
+    const reorderedPlayers = [
+      ...temp.slice(yourIndex),
+      ...temp.slice(0, yourIndex),
+    ];
+
     return {
-      currentPlayer: this.players[this.currentTurnIndex].playerId,
-      players: this.players.map((player) => {
+      currentPlayerId: this.players[this.currentTurnIndex].playerId,
+      players: reorderedPlayers.map((player) => {
         return {
           playerId: player.playerId,
           playerName: player.playerName,
           playerCards: player.cards,
           isAlive: player.isAlive,
-          playerLives: player.lives.length,
-          isHost: player instanceof Host ? true : false,
+          playerLives: player.lives,
+          isHost: player.isHost,
+          isTurn: player.isTurn,
         };
       }),
       currentTurn: this.currentTurnIndex,
@@ -70,6 +85,11 @@ class Game {
 
     // Check if player is alive:
     while (!this.players[this.currentTurnIndex].isAlive) {
+      this.currentTurnIndex = this.currentTurnIndex + 1;
+    }
+
+    // Check if player has cards left:
+    while (this.players.cards.length != 0) {
       this.currentTurnIndex = this.currentTurnIndex + 1;
     }
   }

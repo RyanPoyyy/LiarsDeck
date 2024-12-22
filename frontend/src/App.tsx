@@ -7,6 +7,7 @@ import PlayerAction from "./components/PlayerAction";
 import HistoryArea from "./components/HistoryArea";
 import RuleText from "./components/RuleText";
 import Logo from "./components/Logo";
+import PlayArea from "./components/PlayArea";
 
 function App() {
   const [flip, setFlip] = useState(false);
@@ -52,16 +53,55 @@ function App() {
   useEffect(() => {
     console.log(isChallenged);
   }, [isChallenged]);
+
+  // dummy player objects:
+  const playerObjects = [
+    {
+      playerId: "a1111",
+      playerName: "Ryan Poy",
+      playerCards: ["Jack", "Queen", "King", "Joker", "Jack"],
+      playerLives: 4,
+      isTurn: true,
+      isAlive: true,
+      isHost: true,
+    },
+    {
+      playerId: "b1112",
+      playerName: "Caitlin",
+      playerCards: ["Jack", "Jack"],
+      playerLives: 6,
+      isTurn: true,
+      isAlive: true,
+      isHost: false,
+    },
+    {
+      playerId: "c33333",
+      playerName: "Rapie",
+      playerCards: ["King", "Joker", "Jack"],
+      playerLives: 4,
+      isTurn: true,
+      isAlive: true,
+      isHost: false,
+    },
+    {
+      playerId: "d44444",
+      playerName: "Jen",
+      playerCards: ["Queen", "King", "Joker", "Jack"],
+      playerLives: 4,
+      isTurn: false,
+      isAlive: true,
+      isHost: false,
+    },
+  ];
   return (
     <>
-      <Logo />
       <HistoryArea
         actions={actions}
         isChallenged={isChallenged}
         liarCard="Joker"
       />
       <RuleText liarCard="Queen" />
-      <OtherPlayer
+      {/* <OtherPlayer
         playerObj={{}}
         playerName="Caitlin"
         isAlive={true}
@@ -77,8 +117,15 @@ function App() {
         playerName="Ryan"
         isAlive={false}
         cards={cards}
-        isTurn={false}
+        isTurn={true}
         lives={6}
+        selectedCards={selectedCards}
+        onClick={handleCardSelection}
+      /> */}
+      <PlayArea
+        playerObjs={playerObjects}
+        turnIndex={0}
+        currentPlayer={1}
         selectedCards={selectedCards}
         onClick={handleCardSelection}
       />

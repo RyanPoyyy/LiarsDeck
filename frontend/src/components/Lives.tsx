@@ -9,7 +9,7 @@ const Lives: FC<Props> = ({ lives }) => {
       <span className="mobile:text-lg text-base">{`${lives}/6`}</span>
       <img
         src="/img/Barrel.png"
-        className="w-8 h-8 mobile:w-10 mobile:h-10 object-contain"
+        className="w-5 h-5 mobile:w-8 mobile:h-8 object-contain"
       />
     </div>
   );

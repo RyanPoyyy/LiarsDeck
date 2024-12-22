@@ -3,48 +3,44 @@ import Lives from "./Lives";
 import Card from "./Card";
 interface Props {
   playerObj: any;
-  playerName: string;
-  isAlive: boolean;
-  cards: string[];
-  lives: number;
-  isTurn: boolean;
   selectedCards: number[];
   onClick: (index: number) => void;
+  transformClass: any;
 }
 
 const Player: FC<Props> = ({
   playerObj,
-  playerName,
-  isAlive,
-  cards,
-  lives,
-  isTurn,
   selectedCards,
   onClick,
+  transformClass,
 }) => {
   return (
-    <div className="player-box">
+    <div className={transformClass}>
       {/* Bar containing Cards */}
-      <div className="card-row">
-        {cards.map((card, index) => {
-          return (
-            <Card
-              key={index}
-              name={card}
-              back={isTurn}
-              isSelected={selectedCards.includes(index)}
-              onClick={() => onClick(index)}
-            />
-          );
-        })}
-      </div>
+      {playerObj.isAlive && (
+        <div className="card-row">
+          {playerObj.playerCards.map((card: any, index: number) => {
+            return (
+              <Card
+                key={index}
+                name={card}
+                back={playerObj.isTurn}
+                isSelected={selectedCards.includes(index)}
+                onClick={() => onClick(index)}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {/* Bar containing name and lives/death info */}
       <div className="info-row">
-        <span className="player-name">{playerName}</span>
+        <span className={`player-name ${playerObj.isTurn ? "isturn" : ""}`}>
+          {playerObj.playerName}
+        </span>
         <span className="info">
-          {isAlive ? (
-            <Lives lives={lives} />
+          {playerObj.isAlive ? (
+            <Lives lives={playerObj.playerLives} />
           ) : (
             <img
               src={"/img/Skull2.png"}
