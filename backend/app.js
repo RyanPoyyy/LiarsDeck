@@ -1,9 +1,29 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 const app = express();
 
 require("dotenv").config();
 const port = process.env.PORT;
-const io = require("socket.io")(3000);
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3030",
+      "https://admin.socket.io",
+    ],
+    // origin: "*",
+    credentials: true,
+  },
+});
+
+const Room = require("./classes/Room");
+const Player = require("./classes/Player");
+const Game = require("./classes/Game");
+const Host = require("./classes/Host");
 
 const rooms = {};
 
@@ -12,27 +32,31 @@ function generateRoomCode() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
-io.on("connecton", (socket) => {
+io.on("connection", (socket) => {
   console.log(`Socket connected: ${socket.id}`);
+
+  // get Room info:
+  socket.on("get_room_info", (roomCode, callback) => {
+    const room = rooms[roomCode];
+    if (room) {
+      callback({ success: true, roomInfo: room });
+    } else {
+      callback({ success: false, message: "Room not found" });
+    }
+  });
 
   // Create a new room
   socket.on("create_room", (playerName, callback) => {
     const roomCode = generateRoomCode();
     const room = new Room(roomCode, socket.id);
 
-    const player = {
-      playerId: socket.id,
-      playerName: playerName,
-      cards: [],
-      isAlive: true,
-      lives: 6,
-    };
+    const host = new Host(socket.id, playerName, [], true, 6);
 
-    room.addPlayer(player, true); // Add host
+    room.addPlayer(host, true); // Add host
     rooms[roomCode] = room;
 
     socket.join(roomCode);
-    callback({ roomCode, success: true });
+    callback({ roomCode: roomCode, success: true });
     console.log(`Room created: ${roomCode} by ${playerName}`);
   });
 
@@ -52,7 +76,11 @@ io.on("connecton", (socket) => {
 
     if (room.addPlayer(player)) {
       socket.join(roomCode);
-      io.to(roomCode).emit("update_room", room.getRoomInfo(), player);
+      io.to(roomCode).emit("room_updated", {
+        updatedRoomInfo: room,
+        updateType: "join",
+        playerName: player.playerName,
+      });
       callback({ success: true });
       console.log(`${playerName} joined room ${roomCode}`);
     } else {
@@ -60,6 +88,34 @@ io.on("connecton", (socket) => {
         success: false,
         message: "Failed to join the room. Room is full!",
       });
+    }
+  });
+
+  // Disconnecting/leaving a room:
+  socket.on("leave_room", (roomCode, callback) => {
+    const room = rooms[roomCode];
+    if (!room) {
+      return callback({ success: false, message: "Room not found" });
+    }
+
+    const removedPlayer = room.removePlayer(socket.id);
+    if (removedPlayer) {
+      socket.leave(roomCode);
+
+      // Notify room about updated player list
+      io.to(roomCode).emit("room_updated", {
+        updatedRoomInfo: room,
+        updateType: "leave",
+        playerName: removedPlayer.playerName,
+      });
+      // If no players remain, delete the room
+      if (room.players.length === 0) {
+        delete rooms[roomCode];
+      }
+
+      callback({ success: true });
+    } else {
+      callback({ success: false, message: "Player not in room" });
     }
   });
 
@@ -77,6 +133,13 @@ io.on("connecton", (socket) => {
 
     if (removedPlayer) {
       console.log(`Removing player with ID: ${socket.id}`);
+      io.to(roomCode).emit("room_updated", {
+        updatedRoomInfo: room,
+        updateType: "kick",
+        playerName: removedPlayer.playerName,
+      });
+      io.to(playerCode).emit("kicked_from_room");
+
       return callback({
         success: true,
         message: `Player ${removedPlayer.playerName} kicked`,
@@ -124,4 +187,7 @@ io.on("connecton", (socket) => {
     callback({ success: true });
   });
 });
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+instrument(io, { auth: false, mode: "development" });
+server.listen(port, "0.0.0.0", () =>
+  console.log(`Listening on port ${port}...`)
+);

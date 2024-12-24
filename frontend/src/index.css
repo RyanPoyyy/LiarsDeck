@@ -5,7 +5,7 @@
 
 html {
   /* @apply text-black bg-[url("/img/background.jpg")]; */
-  @apply text-black bg-blue-950;
+  @apply text-black bg-[#191f2b];
   font-family: "Inter", serif;
   color: white;
 }
@@ -144,4 +144,32 @@ img {
 
 .player-box.isturn {
   @apply border-yellow-200 shadow-yellow-100 shadow-2xl;
+}
+
+.create-button {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold text-lg w-full py-3 px-4 rounded;
+}
+
+.btn {
+  @apply bg-blue-700 hover:bg-blue-500 text-white font-bold text-lg w-full py-3 px-4 rounded cursor-pointer;
+}
+
+.btn.disabled {
+  @apply bg-gray-500 text-white font-bold text-lg w-full py-3 px-4 rounded cursor-not-allowed;
+}
+
+.btn.loading {
+  @apply bg-gray-500 text-white font-bold text-lg w-full py-3 px-4 rounded cursor-not-allowed;
+}
+
+.line-behind {
+  @apply w-auto relative text-center mt-6;
+}
+
+.line {
+  @apply border-t-2 border-gray-700 absolute w-full top-1/2 left-0 -z-10;
+}
+
+.strikethrough-text {
+  @apply bg-[#191f2b] inline-block px-4;
 }

@@ -12,7 +12,6 @@ class Room {
     this.hostId = hostId;
     this.players = [];
     this.game = null;
-    this.addPlayer(playerObj, true);
   }
 
   addPlayer(playerObj, isHost = false) {
