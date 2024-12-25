@@ -36,7 +36,6 @@ function App() {
     console.log(selectedCards);
   }, [selectedCards]);
 
-  const cards = ["Jack", "Queen", "King", "Joker", "Jack"];
   const actions = [
     {
       playerName: "Rapie",

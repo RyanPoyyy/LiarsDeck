@@ -39,7 +39,7 @@ const CreateGame = () => {
         toast(`${name} has joined the room!`, {
           icon: "🎮",
         });
-        navigate("/lobby/" + sessionStorage.getItem("roomCode"));
+        navigate("/lobby");
         return;
       } else {
         toast.error("Error creating room, please try again");

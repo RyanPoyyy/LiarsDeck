@@ -150,6 +150,7 @@ io.on("connection", (socket) => {
 
   // Start a game in the room
   socket.on("start_game", (roomCode, callback) => {
+    io.to(roomCode).emit("game_starting");
     const room = rooms[roomCode];
     if (!room) {
       return callback({ success: false, message: "Room not found" });
@@ -172,6 +173,18 @@ io.on("connection", (socket) => {
         message: "Not enough players to start the game",
       });
     }
+  });
+
+  // Getting game Info:
+  // Fetch game state for a player
+  socket.on("get_game_state", (roomCode, playerId, callback) => {
+    const room = rooms[roomCode];
+    if (!room || !room.game) {
+      return callback({ success: false, message: "Game not found" });
+    }
+    const game = room.game;
+    const gameState = game.getGameState(playerId);
+    callback({ success: true, gameState });
   });
 
   // Process game actions (play or challenge)

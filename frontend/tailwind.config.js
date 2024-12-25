@@ -8,7 +8,7 @@ export default {
       },
       screens: {
         // mobile: "460px",
-        mobile: "800px",
+        mobile: "600px",
 
         desktop: "1400px",
       },

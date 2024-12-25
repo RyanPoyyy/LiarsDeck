@@ -16,7 +16,7 @@ class Deck {
   }
 
   dealCards(count) {
-    return this.cards.splice(0, count);
+    return this.dealerCards.splice(0, count);
   }
 }
 

@@ -10,14 +10,9 @@ html {
   color: white;
 }
 
-.writing-vertical {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-}
-
 .card {
   /* @apply w-14 h-20 bg-slate-200 border-2 border-black rounded mobile:w-20 mobile:h-32; */
-  @apply w-12 h-16 bg-slate-200 border-2 border-black rounded;
+  @apply w-10 h-14 mobile:w-14 mobile:h-20 bg-slate-200 border-2 border-black rounded;
 
   perspective: 1000px;
   transform-style: preserve-3d;
@@ -26,7 +21,7 @@ html {
 
 .your-card {
   /* @apply w-14 h-20 bg-slate-200 border-2 border-black rounded mobile:w-20 mobile:h-32; */
-  @apply w-12 h-16 bg-slate-200 border-2 border-black rounded;
+  @apply w-10 h-14 mobile:w-14 mobile:h-20 bg-slate-200 border-2 border-black rounded;
 
   perspective: 1000px;
   transform-style: preserve-3d;
@@ -48,9 +43,6 @@ html {
   transition: transform 0.8s;
 }
 
-/* .card.flipped .card-inner {
-  transform: rotateY(180deg);
-} */
 .card.flipped {
   transform: rotateY(180deg);
 }
@@ -81,7 +73,7 @@ img {
 }
 
 .card-row {
-  @apply flex justify-center align-middle gap-2;
+  @apply flex justify-center align-middle gap-3 mobile:gap-8;
 }
 
 .info-row {
@@ -90,11 +82,7 @@ img {
 
 .player-name {
   /* @apply mobile:text-2xl text-xl text-black font-bold; */
-  @apply text-base text-white font-bold;
-}
-
-.player-name.isturn {
-  /* text-shadow: 2px 2px 5px yellow; */
+  @apply mobile:text-base text-sm text-white font-bold;
 }
 
 .info {
@@ -143,7 +131,7 @@ img {
 }
 
 .player-box.isturn {
-  @apply border-yellow-200 shadow-yellow-100 shadow-2xl;
+  @apply border-sky-500 shadow-sky-200 shadow-md;
 }
 
 .create-button {

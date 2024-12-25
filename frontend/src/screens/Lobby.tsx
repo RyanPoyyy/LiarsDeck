@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ToasterBar from "../components/ToasterBar";
 import { useRoomInfo } from "../hooks/useRoomInfo";
 import Loading from "../components/Loading";
@@ -7,6 +7,7 @@ import { useKickPlayer } from "../hooks/useKickPlayer";
 import { useLeaveRoom } from "../hooks/useLeaveRoom";
 import { useNavigate } from "react-router";
 import socket from "../hooks/socket";
+import { useStartGame } from "../hooks/useStartGame";
 interface Player {
   playerId: string;
   playerName: string;
@@ -25,6 +26,9 @@ const Lobby = () => {
   );
   const { kickPlayer } = useKickPlayer();
   const { leaveRoom } = useLeaveRoom();
+  const { startGame, isStartLoading } = useStartGame(
+    sessionStorage.getItem("roomCode") || ""
+  );
 
   const copyToClipboard = () => {
     if (roomCode) {
@@ -61,6 +65,22 @@ const Lobby = () => {
     }
   };
 
+  const handleStartGame = () => {
+    startGame((success, message) => {
+      if (!success) {
+        toast.error(message || "Failed to start game");
+        return;
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("roomCode")) {
+      navigate("/");
+      return;
+    }
+  }, []);
+
   useEffect(() => {
     socket.on("kicked_from_room", () => {
       sessionStorage.removeItem("roomCode");
@@ -71,6 +91,20 @@ const Lobby = () => {
       socket.off("kicked_from_room");
     };
   }, [navigate]);
+
+  const [isGameStarting, setIsGameStarting] = useState(false);
+  useEffect(() => {
+    socket.on("game_starting", () => {
+      setIsGameStarting(true);
+    });
+    socket.on("game_started", () => {
+      navigate("/game");
+    });
+    return () => {
+      socket.off("game_started");
+      socket.off("game_starting");
+    };
+  }, [isGameStarting]);
 
   return (
     <div className="flex mobile:w-1/2 w-3/4 justify-center flex-col mx-auto">
@@ -106,7 +140,7 @@ const Lobby = () => {
 
       {isLoading ? (
         <Loading message="Getting game info..." />
-      ) : (
+      ) : !isLoading && !isGameStarting ? (
         <div className="mt-4">
           {roomInfo &&
             roomInfo.players.map((player: Player, index: number) => {
@@ -140,7 +174,10 @@ const Lobby = () => {
           {areYouHost && (
             <>
               {roomInfo.players && roomInfo.players.length == 4 ? (
-                <button className="mt-5 bg-green-500 hover:bg-green-700 text-white px-4 py-3 rounded-md text-base w-[100%] mx-auto">
+                <button
+                  className="mt-5 bg-green-500 hover:bg-green-700 text-white px-4 py-3 rounded-md text-base w-[100%] mx-auto"
+                  onClick={handleStartGame}
+                >
                   Start Game
                 </button>
               ) : (
@@ -154,6 +191,8 @@ const Lobby = () => {
             </>
           )}
         </div>
+      ) : (
+        <Loading message="Starting game..." />
       )}
     </div>
   );

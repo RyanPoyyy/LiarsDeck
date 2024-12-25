@@ -42,7 +42,7 @@ const JoinGame = () => {
         // toast(`${name} has joined the room!`, {
         //   icon: "🎮",
         // });
-        navigate("/lobby/" + sessionStorage.getItem("roomCode"));
+        navigate("/lobby");
         return;
       } else {
         if (message) {

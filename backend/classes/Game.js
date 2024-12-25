@@ -1,11 +1,11 @@
 const Deck = require("./Deck");
+const Host = require("./Host");
 
 // actions array (structure for action objects):
 // {
 //     playerId : String,
 //    actionType: String,
 //     cardsPlayed: Array of Strings,
-//      allPlayed: boolean
 
 // }
 
@@ -96,20 +96,33 @@ class Game {
 
   processAction(action) {
     this.actions.push(action);
+
+    // Context, person A challenges person B
     if (action.actionType == "challenge") {
-      const challenegeSuccessful = this.challenge();
+      const challengeSuccessful = this.challenge();
       let isPlayerKilled = false;
+      let challengedPerson;
+
+      // Person B lied so challenge successful
       if (challengeSuccessful) {
         const previousAction = this.actions[this.actions.length - 1];
         const previousPlayerId = previousAction.playerId;
         const previousPlayerObj = this.getPlayer(previousPlayerId);
+
+        // isPlayerKilled tells whether player B is killed
         isPlayerKilled = this.shoot(previousPlayerObj);
-        // Tell Room that the game has ended
-      } else {
+        challengedPerson = previousPlayerObj;
+      }
+
+      // Person B told the truth, so person A takes the chamber
+      else {
         const currentPlayer = this.getCurrentPlayer();
+        // isPlayerKilled tells whether player A is killed
         isPlayerKilled = this.shoot(currentPlayer);
+        challengedPerson = currentPlayer;
       }
       //   EDIT BELOW, if player killed, need to let the Room know to proceed to next game
+      // Should emit both isPlayerKilled and challengedPerson to FE
       //   if(isPlayerKilled){}
     }
 
@@ -138,6 +151,7 @@ class Game {
     const chamber = Math.floor(Math.random() * 6);
     // KILL
     if (chamber == 0) {
+      playerObj.lives = 0;
       playerObj.isAlive = false;
       return true;
     } else {
