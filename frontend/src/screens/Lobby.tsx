@@ -58,6 +58,7 @@ const Lobby = () => {
         (success, message) => {
           if (success) {
             sessionStorage.removeItem("roomCode");
+            sessionStorage.removeItem("isHost");
             navigate("/");
           }
         }

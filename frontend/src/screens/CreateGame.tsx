@@ -36,9 +36,11 @@ const CreateGame = () => {
         if (code) {
           sessionStorage.setItem("roomCode", code);
         }
+        sessionStorage.setItem("playerName", name);
         toast(`${name} has joined the room!`, {
           icon: "🎮",
         });
+        sessionStorage.setItem("isHost", "true");
         navigate("/lobby");
         return;
       } else {

@@ -35,6 +35,10 @@ class Room {
 
   startGame() {
     if (this.players.length == 4) {
+      for (let i = 0; i < this.players.length; i++) {
+        this.players[i].lives = 6;
+        this.players[i].isAlive = true;
+      }
       this.game = new Game(this.players);
       return true;
     }

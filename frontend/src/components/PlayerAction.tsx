@@ -1,13 +1,15 @@
 import React, { FC } from "react";
 
 interface Props {
-  selectedCards: number[];
+  gameInfo: any;
+  selectedCards: Record<number, string>;
   isTurn: boolean;
   playClick: () => void;
   challengeClick: () => void;
 }
 
 const PlayerAction: FC<Props> = ({
+  gameInfo,
   selectedCards,
   isTurn,
   playClick,
@@ -18,9 +20,9 @@ const PlayerAction: FC<Props> = ({
       {/* Play Button */}
       <button
         onClick={playClick}
-        disabled={selectedCards.length === 0}
+        disabled={Object.keys(selectedCards).length === 0}
         className={`px-2 py-2 rounded text-white text-sm mobile:text-base w-32 mobile:w-48 ${
-          selectedCards.length === 0
+          Object.keys(selectedCards).length === 0
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-green-500 hover:bg-green-600"
         }`}
@@ -31,7 +33,7 @@ const PlayerAction: FC<Props> = ({
       {/* Challenge Button */}
       <button
         onClick={challengeClick}
-        disabled={!isTurn}
+        disabled={!isTurn || gameInfo.actions.length == 0}
         className={`px-2 py-2 text-sm mobile:text-base w-32 mobile:w-48 text-center text-white rounded ${
           !isTurn
             ? "cursor-not-allowed bg-gray-400"

@@ -39,6 +39,8 @@ const JoinGame = () => {
     joinRoom(code.toUpperCase(), name, (success, message) => {
       if (success) {
         sessionStorage.setItem("roomCode", code.toUpperCase());
+        sessionStorage.setItem("playerName", name);
+        sessionStorage.setItem("isHost", "false");
         // toast(`${name} has joined the room!`, {
         //   icon: "🎮",
         // });

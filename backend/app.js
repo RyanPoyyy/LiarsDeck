@@ -175,6 +175,28 @@ io.on("connection", (socket) => {
     }
   });
 
+  // going to next round of the game:
+  socket.on("next_round", (roomCode, callback) => {
+    const room = rooms[roomCode];
+    if (!room || !room.game) {
+      return callback({ success: false, message: "Game not found" });
+    }
+    const game = room.game;
+    if (room.hostId !== socket.id) {
+      return callback({
+        success: false,
+        message: "Only the host can go to the next round",
+      });
+    }
+    if (game.nextRound()) {
+      io.to(roomCode).emit("start_next_round", game.getGameState());
+      callback({ success: true });
+    } else {
+      io.to(roomCode).emit("game_finished", room.checkWinner());
+      callback({ success: true });
+    }
+  });
+
   // Getting game Info:
   // Fetch game state for a player
   socket.on("get_game_state", (roomCode, playerId, callback) => {
@@ -184,19 +206,24 @@ io.on("connection", (socket) => {
     }
     const game = room.game;
     const gameState = game.getGameState(playerId);
+    console.log("GameState:" + gameState);
     callback({ success: true, gameState });
   });
 
   // Process game actions (play or challenge)
   socket.on("game_action", (roomCode, action, callback) => {
+    console.log("processing game action");
     const room = rooms[roomCode];
     if (!room || !room.game) {
       return callback({ success: false, message: "Game not found" });
     }
 
     const game = room.game;
-    game.processAction(action);
-    io.to(roomCode).emit("game_update", game.getGameState());
+    const result = game.processAction(action);
+    io.to(roomCode).emit("game_update", {
+      gameState: game.getGameState(socket.id),
+      result: result,
+    });
     callback({ success: true });
   });
 });

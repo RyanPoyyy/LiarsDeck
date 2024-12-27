@@ -3,8 +3,8 @@ import Lives from "./Lives";
 import Card from "./Card";
 interface Props {
   playerObj: any;
-  selectedCards: number[];
-  onClick: (index: number) => void;
+  selectedCards: Record<number, string>;
+  onClick: (index: number, cardValue: string) => void;
   transformClass: any;
 }
 
@@ -25,8 +25,8 @@ const Player: FC<Props> = ({
                 key={index}
                 name={card}
                 back={playerObj.isTurn}
-                isSelected={selectedCards.includes(index)}
-                onClick={() => onClick(index)}
+                isSelected={index in Object.keys(selectedCards)}
+                onClick={() => onClick(index, card)}
               />
             );
           })}

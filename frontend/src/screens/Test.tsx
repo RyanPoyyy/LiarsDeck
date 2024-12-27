@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Player from "../components/Player";
 import OtherPlayer from "../components/OtherPlayer";
+import Barrel from "../components/Barrel";
+import KilledModal from "../components/killedModal";
 
 const Test = () => {
   const playerObj = {
@@ -22,39 +24,26 @@ const Test = () => {
     isAlive: true,
     isHost: true,
   };
+  const [show, setShow] = useState(false);
+  const affectedPlayer = {
+    playerName: "Ryan Poy",
+    playerLives: 4,
+    isAlive: false,
+  };
 
   return (
     <>
-      <div className="fixed bottom-[56px] h-[70%] w-[100%] bg-blue-300">
-        <Player
-          playerObj={playerObj}
-          selectedCards={[]}
-          onClick={() => console.log}
-          transformClass={"player-box isturn"}
+      <div>
+        <button onClick={() => setShow(true)} className="create-button">
+          SHOW
+        </button>
+        <br />
+        <KilledModal
+          isVisible={show}
+          isKilled={true}
+          affectedPlayer={affectedPlayer}
+          isHost={true}
         />
-        {/* <OtherPlayer
-          playerObj={playerObj2}
-          isCardBack={true}
-          //   transformClass={"right-screen desktop:pl-[40%]"}
-          transformClass={"right-screen2 "}
-        />
-        <OtherPlayer
-          playerObj={playerObj2}
-          isCardBack={true}
-          //   transformClass={"right-screen desktop:pl-[40%]"}
-          transformClass={"left-screen "}
-        />
-        <OtherPlayer
-          playerObj={playerObj2}
-          isCardBack={true}
-          //   transformClass={"right-screen desktop:pl-[40%]"}
-          transformClass={"top-screen"}
-        /> */}
-      </div>
-
-      {/* sample button */}
-      <div className="fixed bottom-2 left-0 right-0 bg-slate-500 h-[44px]">
-        buttons
       </div>
     </>
   );

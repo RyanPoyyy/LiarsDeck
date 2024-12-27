@@ -1,8 +1,8 @@
 const Player = require("./Player");
 
 class Host extends Player {
-  constructor(playerId, playerName, cards, isAlive, lives) {
-    super(playerId, playerName, cards, isAlive);
+  constructor(playerId, playerName, cards, isAlive, playerLives) {
+    super(playerId, playerName, cards, isAlive, playerLives);
   }
 }
 

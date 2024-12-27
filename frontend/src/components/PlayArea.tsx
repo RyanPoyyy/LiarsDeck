@@ -6,8 +6,8 @@ interface Props {
   playerObjs: any;
   turnIndex?: number;
   currentPlayer?: any;
-  selectedCards: number[];
-  onClick: (index: number) => void;
+  selectedCards: Record<number, string>;
+  onClick: (index: number, cardValue: string) => void;
 }
 
 const PlayArea: FC<Props> = ({

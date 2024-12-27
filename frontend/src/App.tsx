@@ -39,7 +39,7 @@ function App() {
   const actions = [
     {
       playerName: "Rapie",
-      cardsPlayed: ["Jack", "Queen", "King"],
+      cardsPlayed: ["Ace", "Queen", "King"],
     },
   ];
 
@@ -76,7 +76,7 @@ function App() {
     {
       playerId: "c33333",
       playerName: "Rapie",
-      playerCards: ["King", "Joker", "Jack"],
+      playerCards: ["King", "Joker", "Ace"],
       playerLives: 4,
       isTurn: true,
       isAlive: true,
@@ -85,7 +85,7 @@ function App() {
     {
       playerId: "d44444",
       playerName: "Jen",
-      playerCards: ["Queen", "King", "Joker", "Jack"],
+      playerCards: ["Queen", "King", "Joker", "Ace"],
       playerLives: 4,
       isTurn: false,
       isAlive: true,
@@ -129,6 +129,7 @@ function App() {
         onClick={handleCardSelection}
       />
       <PlayerAction
+        gameInfo={{ actions: [] }}
         selectedCards={selectedCards}
         isTurn={true}
         playClick={() => console.log("Play")}
