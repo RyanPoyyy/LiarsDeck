@@ -1,7 +1,9 @@
 import { io, Socket } from "socket.io-client";
 
 // const SOCKET_URL = "http://localhost:3001";
-const SOCKET_URL = "http://192.168.0.120:3001";
+// const SOCKET_URL = "http://192.168.0.122:3001";
+const SOCKET_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
+
 const socket: Socket = io(SOCKET_URL, { transports: ["websocket"] });
 
 socket.on("connect", () => {

@@ -3,9 +3,10 @@ import Lives from "./Lives";
 import Card from "./Card";
 interface Props {
   playerObj: any;
-  selectedCards: Record<number, string>;
-  onClick: (index: number, cardValue: string) => void;
+  selectedCards: number[];
+  onClick: (index: number) => void;
   transformClass: any;
+  isTurn: boolean;
 }
 
 const Player: FC<Props> = ({
@@ -13,6 +14,7 @@ const Player: FC<Props> = ({
   selectedCards,
   onClick,
   transformClass,
+  isTurn,
 }) => {
   return (
     <div className={transformClass}>
@@ -25,8 +27,12 @@ const Player: FC<Props> = ({
                 key={index}
                 name={card}
                 back={playerObj.isTurn}
-                isSelected={index in Object.keys(selectedCards)}
-                onClick={() => onClick(index, card)}
+                isSelected={selectedCards.includes(index)}
+                onClick={() => {
+                  if (isTurn) {
+                    onClick(index);
+                  }
+                }}
               />
             );
           })}

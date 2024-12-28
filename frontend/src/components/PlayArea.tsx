@@ -6,8 +6,9 @@ interface Props {
   playerObjs: any;
   turnIndex?: number;
   currentPlayer?: any;
-  selectedCards: Record<number, string>;
-  onClick: (index: number, cardValue: string) => void;
+  selectedCards: number[];
+  onClick: (index: number) => void;
+  isTurn: boolean;
 }
 
 const PlayArea: FC<Props> = ({
@@ -16,15 +17,8 @@ const PlayArea: FC<Props> = ({
   currentPlayer,
   selectedCards,
   onClick,
+  isTurn,
 }) => {
-  const yourId = sessionStorage.getItem("yourId");
-  const positions: { [key: number]: string } = {
-    0: "bottom-screen",
-    1: "right-screen",
-    2: "top-screen",
-    3: "left-screen",
-  };
-
   return (
     // <div className="absolute bottom-[56px] w-full h-[70%]  ">
     <div className=" mb-4 mt-2 flex flex-1 flex-col-reverse justify-end gap-2 ">
@@ -37,6 +31,7 @@ const PlayArea: FC<Props> = ({
                 selectedCards={selectedCards}
                 onClick={onClick}
                 transformClass={`player-box ${player.isTurn ? "isturn" : ""}`}
+                isTurn={isTurn}
               />
             ) : (
               <OtherPlayer

@@ -26,10 +26,13 @@ const Game = () => {
   }, [roomCode, playerId, navigate]);
 
   const {
+    selectedCards,
+    setSelectedCards,
     gameInfo,
-    isGettingGameInfo,
     isYourTurn,
-    performAction,
+    playCards,
+    challengeHandler,
+    nextRoundHandler,
     isGameOver,
     isKilled,
     affectedPlayer,
@@ -38,48 +41,31 @@ const Game = () => {
   } = useGameInfo(roomCode, playerId);
 
   // Select cards logic
-  const [selectedCards, setSelectedCards] = useState<Record<number, string>>(
-    {}
-  );
-  const handleCardSelection = (index: number, cardValue: string) => {
+  const handleCardSelection = (index: number) => {
     setSelectedCards((prevSelected) => {
-      const isCardSelected = index in prevSelected;
-
-      // If card is already selected, remove it
-      if (isCardSelected) {
-        const { [index]: removedCard, ...remainingCards } = prevSelected;
-        return remainingCards;
-      }
-
-      // If already 3 cards are selected, show error
-      if (Object.keys(prevSelected).length >= 3) {
+      if (prevSelected.includes(index)) {
+        return prevSelected.filter((i) => i !== index);
+      } else if (prevSelected.length == 3) {
         toast.error("You can only select 3 cards");
         return prevSelected;
+      } else {
+        return [...prevSelected, index];
       }
-
-      // Add the new card to the selection
-      return {
-        ...prevSelected,
-        [index]: cardValue,
-      };
     });
   };
 
   //   Play logic:
   const handlePlay = () => {
-    // const yourHand = gameInfo.players[0].playerCards;
-    // const selectedCardsArr = selectedCards.map((index) => yourHand[index]);
+    const yourHand = gameInfo.players[0].playerCards;
+    const selectedCardsArr = selectedCards.map((index) => yourHand[index]);
     const action = {
       playerName: playerName,
       playerId: playerId,
       actionType: "play",
-      cardsPlayed: selectedCards,
+      cardsPlayed: selectedCardsArr,
+      cardsIndex: selectedCards,
     };
-    performAction(action, (success: boolean, message?: string) => {
-      if (success) {
-        setSelectedCards([]);
-      }
-    });
+    playCards(action, (success: boolean, message?: string) => {});
   };
 
   //   Challenge logic:
@@ -91,55 +77,6 @@ const Game = () => {
   useEffect(() => {
     console.log(selectedCards);
   }, [selectedCards]);
-
-  //   Dummy Data:
-  // 1) Actions:
-  //   const actions = [
-  //     {
-  //       playerName: "Rapie",
-  //       cardsPlayed: ["Jack", "Queen", "King"],
-  //     },
-  //   ];
-
-  //   2) player objects:
-  //   const playerObjects = [
-  //     {
-  //       playerId: "a1111",
-  //       playerName: "Ryan Poy",
-  //       playerCards: ["Jack", "Queen", "King", "Joker", "Jack"],
-  //       playerLives: 4,
-  //       isTurn: true,
-  //       isAlive: true,
-  //       isHost: true,
-  //     },
-  //     {
-  //       playerId: "b1112",
-  //       playerName: "Caitlin",
-  //       playerCards: ["Jack", "Jack"],
-  //       playerLives: 6,
-  //       isTurn: false,
-  //       isAlive: true,
-  //       isHost: false,
-  //     },
-  //     {
-  //       playerId: "c33333",
-  //       playerName: "Rapie",
-  //       playerCards: ["King", "Joker", "Jack"],
-  //       playerLives: 4,
-  //       isTurn: false,
-  //       isAlive: true,
-  //       isHost: false,
-  //     },
-  //     {
-  //       playerId: "d44444",
-  //       playerName: "Jen",
-  //       playerCards: ["Queen", "King", "Joker", "Jack"],
-  //       playerLives: 4,
-  //       isTurn: false,
-  //       isAlive: true,
-  //       isHost: false,
-  //     },
-  //   ];
 
   return (
     <>
@@ -162,11 +99,13 @@ const Game = () => {
             playerObjs={gameInfo.players}
             selectedCards={selectedCards}
             onClick={handleCardSelection}
+            isTurn={gameInfo.players[0].isTurn}
           />
           <PlayerAction
             gameInfo={gameInfo}
             selectedCards={selectedCards}
-            isTurn={isYourTurn}
+            // isTurn={isYourTurn}
+            isTurn={gameInfo.players[0].isTurn}
             playClick={handlePlay}
             challengeClick={handleChallenge}
           />

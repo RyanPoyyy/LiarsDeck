@@ -6,7 +6,8 @@ const Host = require("./Host");
 // playerName: String,
 //     playerId : String,
 //    actionType: String,
-//     cardsPlayed:
+//     cardsPlayed: string[]
+
 // obj of structure {
 //         index (number): cardValue (string)}
 
@@ -45,24 +46,18 @@ class Game {
     return this.players.find((player) => player.playerId == playerId);
   }
 
-  getGameState(playerId) {
+  getGameState() {
     // TODO: Map the array to rearrange array
-    const yourIndex = this.players.findIndex(
-      (player) => player.playerId === playerId
-    );
+
     const temp = this.players.map((player, index) => ({
       ...player,
       isHost: player instanceof Host ? true : false,
       isTurn: index === this.currentTurnIndex,
     }));
-    const reorderedPlayers = [
-      ...temp.slice(yourIndex),
-      ...temp.slice(0, yourIndex),
-    ];
 
     return {
       currentPlayerId: this.players[this.currentTurnIndex].playerId,
-      players: reorderedPlayers.map((player) => {
+      players: temp.map((player) => {
         return {
           playerId: player.playerId,
           playerName: player.playerName,
@@ -98,86 +93,148 @@ class Game {
     }
   }
 
-  processAction(action) {
+  processPlayCards(roomCode, playerId, action) {
     this.actions.push(action);
+    let currentPlayer = this.getPlayer(playerId);
+    currentPlayer.cards = currentPlayer.cards.filter(
+      (card, index) => !action.cardsIndex.includes(index)
+    );
+    this.nextTurn();
 
-    // Context, person A challenges person B
-    if (action.actionType == "challenge") {
-      const challengeSuccessful = this.challenge();
-      let isPlayerKilled = false;
-      let challengedPerson;
+    // After going next turn, need to check if only 1 player has cards left:
+    if (this.checkTotalPlayers()) {
+      // need to kill the next fella
+      currentPlayer = this.getCurrentPlayer();
+      const isKilled = this.shoot(this.getCurrentPlayer());
+      return {
+        eventType: "game_over",
+        isPlayerKilled: isKilled,
+        player: currentPlayer,
+      };
+    }
+    // else, next turn, return none?
+    return {
+      eventType: "play",
+      isPlayerKilled: false,
+      player: currentPlayer,
+    };
+  }
 
-      // Person B lied so challenge successful
-      if (challengeSuccessful) {
-        const previousAction = this.actions[this.actions.length - 1];
-        const previousPlayerId = previousAction.playerId;
-        const previousPlayerObj = this.getPlayer(previousPlayerId);
+  processChallenge(roomCode, playerId) {
+    const challengeSuccessful = this.challenge();
+    let isPlayerKilled = false;
+    let challengedPerson;
 
-        // isPlayerKilled tells whether player B is killed
-        isPlayerKilled = this.shoot(previousPlayerObj);
-        challengedPerson = previousPlayerObj;
-        return {
-          eventType: "challenge_successful",
-          isPlayerKilled: isPlayerKilled,
-          player: previousPlayerObj,
-        };
-      }
+    // Person B lied so challenge successful
+    if (challengeSuccessful) {
+      const previousAction = this.actions[this.actions.length - 1];
+      const previousPlayerId = previousAction.playerId;
+      const previousPlayerObj = this.getPlayer(previousPlayerId);
 
-      // Person B told the truth, so person A takes the chamber
-      else {
-        const currentPlayer = this.getCurrentPlayer();
-        // isPlayerKilled tells whether player A is killed
-        isPlayerKilled = this.shoot(currentPlayer);
-        challengedPerson = currentPlayer;
-        return {
-          eventType: "challenge_failed",
-          isPlayerKilled: isPlayerKilled,
-          player: currentPlayer,
-        };
-      }
+      // isPlayerKilled tells whether player B is killed
+      isPlayerKilled = this.shoot(previousPlayerObj);
+      challengedPerson = previousPlayerObj;
+      return {
+        eventType: "challenge_successful",
+        isPlayerKilled: isPlayerKilled,
+        player: previousPlayerObj,
+      };
     }
 
-    // Action is "play", process cards
+    // Person B told the truth, so person A takes the chamber
     else {
-      const currentPlayerId = action.playerId;
-      const currentPlayer = this.getPlayer(currentPlayerId);
-      const cardsPlayedObj = action.cardsPlayed;
-      let tempCardArray;
-      tempCardArray = currentPlayer.cards.filter(
-        (card, index) => !(index in cardsPlayedObj)
-      );
-      currentPlayer.cards = tempCardArray;
-      this.nextTurn();
-      // After going next turn, need to check if only 1 player has cards left:
-      if (this.checkPlayers()) {
-        // need to kill the next fella
-        const currentPlayer = this.getCurrentPlayer();
-        const isKilled = this.shoot(this.getCurrentPlayer());
-        return {
-          eventType: "game_over",
-          isPlayerKilled: isKilled,
-          player: currentPlayer,
-        };
-      }
-      // else, next turn, return none?
+      const currentPlayer = this.getCurrentPlayer();
+      // isPlayerKilled tells whether player A is killed
+      isPlayerKilled = this.shoot(currentPlayer);
+      challengedPerson = currentPlayer;
       return {
-        eventType: "play",
-        isPlayerKilled: false,
+        eventType: "challenge_failed",
+        isPlayerKilled: isPlayerKilled,
         player: currentPlayer,
       };
     }
   }
+
+  // processAction(action) {
+  //   this.actions.push(action);
+
+  //   // Context, person A challenges person B
+  //   if (action.actionType == "challenge") {
+  //     const challengeSuccessful = this.challenge();
+  //     let isPlayerKilled = false;
+  //     let challengedPerson;
+
+  //     // Person B lied so challenge successful
+  //     if (challengeSuccessful) {
+  //       const previousAction = this.actions[this.actions.length - 1];
+  //       const previousPlayerId = previousAction.playerId;
+  //       const previousPlayerObj = this.getPlayer(previousPlayerId);
+
+  //       // isPlayerKilled tells whether player B is killed
+  //       isPlayerKilled = this.shoot(previousPlayerObj);
+  //       challengedPerson = previousPlayerObj;
+  //       return {
+  //         eventType: "challenge_successful",
+  //         isPlayerKilled: isPlayerKilled,
+  //         player: previousPlayerObj,
+  //       };
+  //     }
+
+  //     // Person B told the truth, so person A takes the chamber
+  //     else {
+  //       const currentPlayer = this.getCurrentPlayer();
+  //       // isPlayerKilled tells whether player A is killed
+  //       isPlayerKilled = this.shoot(currentPlayer);
+  //       challengedPerson = currentPlayer;
+  //       return {
+  //         eventType: "challenge_failed",
+  //         isPlayerKilled: isPlayerKilled,
+  //         player: currentPlayer,
+  //       };
+  //     }
+  //   }
+
+  //   // Action is "play", process cards
+  //   else {
+  //     const currentPlayerId = action.playerId;
+  //     const currentPlayer = this.getPlayer(currentPlayerId);
+  //     const cardsPlayedObj = action.cardsPlayed;
+  //     let tempCardArray;
+  //     tempCardArray = currentPlayer.cards.filter(
+  //       (card, index) => !(index in cardsPlayedObj)
+  //     );
+  //     currentPlayer.cards = tempCardArray;
+  //     this.nextTurn();
+  //     // After going next turn, need to check if only 1 player has cards left:
+  //     if (this.checkPlayers()) {
+  //       // need to kill the next fella
+  //       const currentPlayer = this.getCurrentPlayer();
+  //       const isKilled = this.shoot(this.getCurrentPlayer());
+  //       return {
+  //         eventType: "game_over",
+  //         isPlayerKilled: isKilled,
+  //         player: currentPlayer,
+  //       };
+  //     }
+  //     // else, next turn, return none?
+  //     return {
+  //       eventType: "play",
+  //       isPlayerKilled: false,
+  //       player: currentPlayer,
+  //     };
+  //   }
+  // }
 
   challenge() {
     const currentPlayer = this.getCurrentPlayer();
 
     const previousAction = this.actions[this.actions.length - 1];
     const previousPlayer = this.getPlayer(previousAction.playerId);
-    for ([index, cardValue] of Object.entries(previousAction.cardsPlayed)) {
-      if (cardValue == "Joker") {
+    for (let card of previousAction.cardsPlayed) {
+      if (card == "Joker") {
         continue;
       }
-      if (cardValue != this.liarCard) {
+      if (card != this.liarCard) {
         return false;
       }
     }
@@ -202,9 +259,9 @@ class Game {
   }
 
   // Function to check if there is only 1 player with cards left:
-  checkPlayers() {
+  checkTotalPlayers() {
     let only1Playerleft = false;
-    for (player of this.players) {
+    for (const player of this.players) {
       if (player.isAlive && player.cards.length == 0) {
         only1Playerleft = true;
       }
@@ -219,8 +276,8 @@ class Game {
 
     // Check if there is only 1 player remaining:
     let isAlive = 0;
-    for (player of this.players) {
-      if (player.isAlive) {
+    for (const player of this.players) {
+      if (player.isAlive || player.lives > 0) {
         isAlive += 1;
       }
     }

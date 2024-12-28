@@ -2,7 +2,7 @@ import React, { FC } from "react";
 
 interface Props {
   gameInfo: any;
-  selectedCards: Record<number, string>;
+  selectedCards: number[];
   isTurn: boolean;
   playClick: () => void;
   challengeClick: () => void;
@@ -20,9 +20,9 @@ const PlayerAction: FC<Props> = ({
       {/* Play Button */}
       <button
         onClick={playClick}
-        disabled={Object.keys(selectedCards).length === 0}
+        disabled={selectedCards.length === 0 || !isTurn}
         className={`px-2 py-2 rounded text-white text-sm mobile:text-base w-32 mobile:w-48 ${
-          Object.keys(selectedCards).length === 0
+          selectedCards.length === 0 || !isTurn
             ? "bg-gray-400 cursor-not-allowed"
             : "bg-green-500 hover:bg-green-600"
         }`}

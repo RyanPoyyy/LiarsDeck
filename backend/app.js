@@ -1,4 +1,5 @@
 const express = require("express");
+
 const http = require("http");
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
@@ -188,10 +189,13 @@ io.on("connection", (socket) => {
         message: "Only the host can go to the next round",
       });
     }
+    // Scenario 1: Can go next round
     if (game.nextRound()) {
       io.to(roomCode).emit("start_next_round", game.getGameState());
       callback({ success: true });
-    } else {
+    }
+    // Scenario 2: Game finished, winner found
+    else {
       io.to(roomCode).emit("game_finished", room.checkWinner());
       callback({ success: true });
     }
@@ -205,29 +209,74 @@ io.on("connection", (socket) => {
       return callback({ success: false, message: "Game not found" });
     }
     const game = room.game;
-    const gameState = game.getGameState(playerId);
-    console.log("GameState:" + gameState);
+    const gameState = game.getGameState();
     callback({ success: true, gameState });
   });
 
-  // Process game actions (play or challenge)
-  socket.on("game_action", (roomCode, action, callback) => {
-    console.log("processing game action");
+  // Process game actions (play )
+  socket.on("play_cards", (roomCode, playerId, action, callback) => {
     const room = rooms[roomCode];
     if (!room || !room.game) {
       return callback({ success: false, message: "Game not found" });
     }
-
     const game = room.game;
-    const result = game.processAction(action);
+    const result = game.processPlayCards(roomCode, playerId, action);
+
+    console.dir(game.getGameState());
+    console.dir(game.getGameState().players[0].playerCards);
+    io.to(roomCode).emit("game_update", game.getGameState(), result);
+
+    // // Scenario 1: Play cards and there are still people remaining
+    // if (result.eventType == "play") {
+    //   io.to(roomCode).emit("game_update", {
+    //     gameState: game.getGameState(),
+    //     result: result,
+    //   });
+    // }
+
+    // // Scenario 2: There is only 1 person with cards remaining
+    // else {
+    //   io.to(roomCode).emit("game_update", {
+    //     gameState: game.getGameState(),
+    //     result: result,
+    //   })
+    // }
+  });
+
+  // Process game actions (challenge )
+  socket.on("challenge_cards", (roomCode, playerId, callback) => {
+    const room = rooms[roomCode];
+    if (!room || !room.game) {
+      return callback({ success: false, message: "Game not found" });
+    }
+    const game = room.game;
+    const result = game.processChallenge(roomCode, playerId);
+
     io.to(roomCode).emit("game_update", {
-      gameState: game.getGameState(socket.id),
+      gameState: game.getGameState(),
       result: result,
     });
-    callback({ success: true });
   });
+
+  // socket.on("game_action", (roomCode, action, callback) => {
+  //   console.log("processing game action");
+  //   const room = rooms[roomCode];
+  //   if (!room || !room.game) {
+  //     return callback({ success: false, message: "Game not found" });
+  //   }
+
+  //   const game = room.game;
+  //   const result = game.processAction(action);
+  //   io.to(roomCode).emit("game_update", {
+  //     gameState: game.getGameState(socket.id),
+  //     result: result,
+  //   });
+  //   callback({ success: true });
+  // });
 });
 instrument(io, { auth: false, mode: "development" });
-server.listen(port, "0.0.0.0", () =>
-  console.log(`Listening on port ${port}...`)
+server.listen(
+  3001,
+  // "0.0.0.0",
+  () => console.log(`Listening on port ${port}...`)
 );

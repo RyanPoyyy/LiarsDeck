@@ -26,7 +26,13 @@ interface GameInfo {
   actions: Action[];
 }
 
+// interface Response {
+//   gameState: GameInfo;
+//   result: any;
+// }
+
 export const useGameInfo = (roomCode: string, playerId: string) => {
+  const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [gameInfo, setGameInfo] = useState<GameInfo>({
     currentPlayerId: "",
     players: [],
@@ -34,7 +40,6 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     liarCard: "",
     actions: [],
   });
-  const [isGettingGameInfo, setIsGettingGameInfo] = useState<boolean>(true);
   const [isYourTurn, setIsYourTurn] = useState<boolean>(false);
 
   //   Rounds constants
@@ -51,13 +56,15 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     // Initial game info
     socket.emit("get_game_state", roomCode, playerId, (response: any) => {
       if (response.success) {
+        response.gameState.players = remapGameData(
+          response.gameState,
+          playerId
+        );
         setGameInfo(response.gameState);
         setIsYourTurn(false);
         if (playerId == response.gameState.currentPlayerId) {
           setIsYourTurn(true);
         }
-
-        setIsGettingGameInfo(false);
       } else {
         console.log(response.message);
       }
@@ -66,6 +73,7 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     // Listening for real time updates:
     socket.on("game_update", (gameUpdates: GameInfo, result: any) => {
       console.log(gameUpdates);
+      gameUpdates.players = remapGameData(gameUpdates, playerId);
       if (result.eventType == "play") {
         setGameInfo(gameUpdates);
         setIsYourTurn(false);
@@ -87,6 +95,7 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     // Listening for next round updates:
     socket.on("start_next_round", (gameState: GameInfo) => {
       setIsGameOver(false);
+      gameState.players = remapGameData(gameState, playerId);
       setGameInfo(gameState);
       setIsYourTurn(false);
       if (playerId == gameState.currentPlayerId) {
@@ -107,16 +116,28 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     };
   }, [roomCode, playerId]);
 
-  //   Sending actions to backend
-  const performAction = (
+  //   Play function, sending actions obj to backend
+  const playCards = (
     action: any,
     callback: (success: boolean, message?: string) => void
   ) => {
-    socket.emit("game_action", roomCode, action, (response: any) => {
+    setSelectedCards([]);
+    socket.emit("play_cards", roomCode, playerId, action, (response: any) => {
       if (response.success) {
         callback(true);
       } else {
         callback(false, response.message);
+      }
+    });
+  };
+
+  //   Challenge function:
+  const challengeHandler = () => {
+    socket.emit("challenge_cards", roomCode, playerId, (response: any) => {
+      if (response.success) {
+        console.log("Challenged");
+      } else {
+        console.log(response.message);
       }
     });
   };
@@ -131,11 +152,26 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     });
   };
 
+  const remapGameData = (gameData: GameInfo, playerId: string) => {
+    const yourIndex = gameData.players.findIndex(
+      (player: any) => player.playerId == playerId
+    );
+
+    const reorderedPlayers = [
+      ...gameData.players.slice(yourIndex),
+      ...gameData.players.slice(0, yourIndex),
+    ];
+    return reorderedPlayers;
+  };
+
   return {
+    selectedCards,
+    setSelectedCards,
     gameInfo,
-    isGettingGameInfo,
     isYourTurn,
-    performAction,
+    playCards,
+    challengeHandler,
+    nextRoundHandler,
     isGameOver,
     isKilled,
     affectedPlayer,

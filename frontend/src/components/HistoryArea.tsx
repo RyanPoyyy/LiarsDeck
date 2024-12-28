@@ -17,7 +17,7 @@ const HistoryArea: FC<Props> = ({ actions, isChallenged, liarCard }) => {
           <p className="flex flex-row align-middle justify-center mobile:text-base text-sm text-white">{`${lastAction.playerName} claims ${lastAction.cardsPlayed.length} ${liarCard}`}</p>
           <div className="flex flex-row align-middle justify-center gap-4">
             {lastAction.cardsPlayed.map((card: string, index: number) => {
-              return <OtherCard key={index} name={card} back={isChallenged} />;
+              return <OtherCard key={index} name={card} back={!isChallenged} />;
             })}
           </div>
         </div>

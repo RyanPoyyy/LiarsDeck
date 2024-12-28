@@ -47,7 +47,9 @@ class Room {
 
   //   To see if there is only 1 player still alive (signify end of game):
   checkWinner() {
-    let alivePlayers = this.players.filter((player) => player.isAlive);
+    let alivePlayers = this.players.filter(
+      (player) => player.isAlive || player.lives > 0
+    );
     if (alivePlayers.length == 1) {
       return alivePlayers[0];
     }
