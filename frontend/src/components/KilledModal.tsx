@@ -33,12 +33,14 @@ interface ModalProps {
   isKilled: boolean;
   affectedPlayer: any;
   isHost: boolean;
+  onClick: () => void;
 }
 const killedModal: React.FC<ModalProps> = ({
   isVisible,
   isKilled,
   affectedPlayer,
   isHost,
+  onClick,
 }) => {
   const [show, setShow] = useState(false);
   const [showBarrel, setShowBarrel] = useState(true);
@@ -47,10 +49,10 @@ const killedModal: React.FC<ModalProps> = ({
     if (isVisible) {
       const timer = setTimeout(() => {
         setShow(true);
-      }, 1000);
+      }, 2000);
       const timer2 = setTimeout(() => {
         setShowBarrel(false);
-      }, 2500);
+      }, 5000);
 
       return () => {
         clearTimeout(timer);
@@ -64,7 +66,7 @@ const killedModal: React.FC<ModalProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <motion.div
-        className="bg-white rounded-lg shadow-lg p-2 w-1/2 h-1/2 flex items-center justify-center"
+        className="bg-white rounded-lg shadow-lg p-2 w-2/3 h-1/2 flex items-center justify-center"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2 }}
@@ -96,7 +98,8 @@ const killedModal: React.FC<ModalProps> = ({
                 Result
               </motion.p>
               <motion.p variants={textVariant} className="text-base">
-                Player {affectedPlayer.playerName}
+                <span className="font-bold">Player </span>{" "}
+                {affectedPlayer.playerName}
               </motion.p>
               {isKilled ? (
                 <motion.p
@@ -117,14 +120,14 @@ const killedModal: React.FC<ModalProps> = ({
                     variants={textVariant}
                     className="text-base text-black"
                   >
-                    {affectedPlayer.playerLives} lives remaining
+                    {affectedPlayer.lives} lives remaining
                   </motion.p>
                 </>
               )}
 
               {isHost && (
                 <motion.button
-                  onClick={console.log}
+                  onClick={onClick}
                   className="create-button mt-6 "
                   variants={textVariant}
                 >

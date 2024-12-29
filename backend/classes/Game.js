@@ -85,11 +85,17 @@ class Game {
     // Check if player is alive:
     while (!this.players[this.currentTurnIndex].isAlive) {
       this.currentTurnIndex = this.currentTurnIndex + 1;
+      if (this.currentTurnIndex == 4) {
+        this.currentTurnIndex = 0;
+      }
     }
 
     // Check if player has cards left:
     while (this.players[this.currentTurnIndex].cards.length == 0) {
       this.currentTurnIndex = this.currentTurnIndex + 1;
+      if (this.currentTurnIndex == 4) {
+        this.currentTurnIndex = 0;
+      }
     }
   }
 
@@ -226,19 +232,18 @@ class Game {
   // }
 
   challenge() {
-    const currentPlayer = this.getCurrentPlayer();
-
     const previousAction = this.actions[this.actions.length - 1];
-    const previousPlayer = this.getPlayer(previousAction.playerId);
-    for (let card of previousAction.cardsPlayed) {
+    console.log(previousAction);
+    for (let i = 0; i < previousAction.cardsPlayed.length; i++) {
+      let card = previousAction.cardsPlayed[i];
       if (card == "Joker") {
         continue;
       }
       if (card != this.liarCard) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   shoot(playerObj) {
@@ -260,13 +265,14 @@ class Game {
 
   // Function to check if there is only 1 player with cards left:
   checkTotalPlayers() {
-    let only1Playerleft = false;
+    let playersLeft = 0;
     for (const player of this.players) {
-      if (player.isAlive && player.cards.length == 0) {
-        only1Playerleft = true;
+      console.dir(player);
+      if (player.isAlive && player.cards.length > 0) {
+        playersLeft++;
       }
     }
-    return only1Playerleft;
+    return playersLeft == 1;
   }
 
   // go to next round: return True if can go, false if game finish

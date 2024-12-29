@@ -64,6 +64,14 @@ html {
   -moz-backface-visibility: hidden;
 }
 
+.correct-border {
+  @apply border-green-500 border-2;
+}
+
+.wrong-border {
+  @apply border-red-500 border-2;
+}
+
 img {
   @apply w-full h-full object-cover;
 }

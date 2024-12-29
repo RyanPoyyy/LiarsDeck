@@ -33,7 +33,7 @@ const OtherPlayer: FC<Props> = ({
             <Lives lives={playerObj.playerLives} />
           ) : (
             <img
-              src={"/img/Skull2.png"}
+              src={"/img/Death.png"}
               className="w-8 h-8 mobile:w-10 mobile:h-10 object-contain"
             />
           )}

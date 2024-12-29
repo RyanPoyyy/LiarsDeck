@@ -4,6 +4,9 @@ import OtherPlayer from "../components/OtherPlayer";
 import Barrel from "../components/Barrel";
 import KilledModal from "../components/killedModal";
 import WinnerModal from "../components/WinnerModal";
+import OtherCard from "../components/OtherCard";
+import ChallengedCard from "../components/ChallengedCard";
+import Instructions from "../components/Instructions";
 
 const Test = () => {
   const playerObj = {
@@ -32,17 +35,31 @@ const Test = () => {
     playerLives: 4,
     isAlive: false,
   };
+  const cards = ["Joker", "Queen", "King", "Ace"];
+  const isValid = (name: string) => {
+    if (name == "Joker" || name == "Queen") {
+      return true;
+    }
+    return false;
+  };
 
   return (
     <>
       <div>
-        <button onClick={() => setShow(true)} className="create-button">
+        {/* <button onClick={() => setShow(true)} className="create-button">
           SHOW
         </button>
         <button onClick={() => setShow2(true)} className="create-button">
           SHOW 2
-        </button>
+        </button> */}
         <br />
+        {/* {cards.map((card) => {
+          return (
+            <ChallengedCard back={false} isValid={isValid(card)} name={card} />
+          );
+        })} */}
+        <Instructions />
+        {/* <ChallengedCard /> */}
         <KilledModal
           isVisible={show}
           isKilled={true}

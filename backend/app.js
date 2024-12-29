@@ -192,12 +192,12 @@ io.on("connection", (socket) => {
     // Scenario 1: Can go next round
     if (game.nextRound()) {
       io.to(roomCode).emit("start_next_round", game.getGameState());
-      callback({ success: true });
+      return callback({ success: true });
     }
     // Scenario 2: Game finished, winner found
     else {
       io.to(roomCode).emit("game_finished", room.checkWinner());
-      callback({ success: true });
+      return callback({ success: true });
     }
   });
 
@@ -223,7 +223,7 @@ io.on("connection", (socket) => {
     const result = game.processPlayCards(roomCode, playerId, action);
 
     console.dir(game.getGameState());
-    console.dir(game.getGameState().players[0].playerCards);
+    // console.dir(game.getGameState().players[0].playerCards);
     io.to(roomCode).emit("game_update", game.getGameState(), result);
 
     // // Scenario 1: Play cards and there are still people remaining
@@ -252,10 +252,24 @@ io.on("connection", (socket) => {
     const game = room.game;
     const result = game.processChallenge(roomCode, playerId);
 
-    io.to(roomCode).emit("game_update", {
-      gameState: game.getGameState(),
-      result: result,
-    });
+    io.to(roomCode).emit("game_update", game.getGameState(), result);
+  });
+
+  // Return to lobby functions:
+  socket.on("return_to_lobby", (roomCode, callback) => {
+    // Should change all players lives back to full:
+    const room = rooms[roomCode];
+    if (!room) {
+      return callback({ success: false, message: "Room not found" });
+    }
+    const game = room.game;
+    game.currentTurnIndex = 0;
+    for (let i = 0; i < game.players.length; i++) {
+      game.players[i].lives = 6;
+      game.players[i].isAlive = true;
+      game.players[i].cards = [];
+    }
+    io.to(roomCode).emit("navigate_lobby");
   });
 
   // socket.on("game_action", (roomCode, action, callback) => {
@@ -274,6 +288,7 @@ io.on("connection", (socket) => {
   //   callback({ success: true });
   // });
 });
+
 instrument(io, { auth: false, mode: "development" });
 server.listen(
   3001,

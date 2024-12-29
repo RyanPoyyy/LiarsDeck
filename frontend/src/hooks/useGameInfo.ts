@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import socket from "./socket";
+import { useNavigate } from "react-router";
 
 interface Player {
   playerId: string;
@@ -32,7 +33,10 @@ interface GameInfo {
 // }
 
 export const useGameInfo = (roomCode: string, playerId: string) => {
+  const navigate = useNavigate();
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
+  const [isChallenged, setIsChallenged] = useState(false);
+
   const [gameInfo, setGameInfo] = useState<GameInfo>({
     currentPlayerId: "",
     players: [],
@@ -40,7 +44,6 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     liarCard: "",
     actions: [],
   });
-  const [isYourTurn, setIsYourTurn] = useState<boolean>(false);
 
   //   Rounds constants
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
@@ -50,6 +53,10 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
   //   Winner constants:
   const [winner, setWinner] = useState();
   const [isWin, setIsWin] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log(isChallenged);
+  }, [isChallenged]);
 
   // Fetching game info:
   useEffect(() => {
@@ -61,9 +68,7 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
           playerId
         );
         setGameInfo(response.gameState);
-        setIsYourTurn(false);
         if (playerId == response.gameState.currentPlayerId) {
-          setIsYourTurn(true);
         }
       } else {
         console.log(response.message);
@@ -73,18 +78,17 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     // Listening for real time updates:
     socket.on("game_update", (gameUpdates: GameInfo, result: any) => {
       console.log(gameUpdates);
+      setSelectedCards([]);
       gameUpdates.players = remapGameData(gameUpdates, playerId);
       if (result.eventType == "play") {
         setGameInfo(gameUpdates);
-        setIsYourTurn(false);
-        if (playerId == gameUpdates.currentPlayerId) {
-          setIsYourTurn(true);
-        }
+
         return;
       }
 
       //   Challenge (success and fail), and only person remaining
       else {
+        setIsChallenged(true);
         setAffectedPlayer(result.player);
         setIsKilled(result.isPlayerKilled);
         setIsGameOver(true);
@@ -95,18 +99,24 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     // Listening for next round updates:
     socket.on("start_next_round", (gameState: GameInfo) => {
       setIsGameOver(false);
+      setIsChallenged(false);
       gameState.players = remapGameData(gameState, playerId);
       setGameInfo(gameState);
-      setIsYourTurn(false);
-      if (playerId == gameState.currentPlayerId) {
-        setIsYourTurn(true);
-      }
     });
 
     // listening for winners updates:
     socket.on("game_finished", (playerObj: any) => {
+      setIsGameOver(false);
+      setIsChallenged(false);
       setWinner(playerObj);
       setIsWin(true);
+    });
+
+    // Return to lobby:
+    socket.on("navigate_lobby", () => {
+      console.log("Navigating to lobby");
+      navigate("/lobby");
+      return;
     });
 
     return () => {
@@ -142,10 +152,20 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     });
   };
 
-  const nextRoundHandler = (roomCode: string) => {
+  const nextRoundHandler = () => {
     socket.emit("next_round", roomCode, (response: any) => {
       if (response.success) {
         console.log("Next Round");
+      } else {
+        console.log(response.message);
+      }
+    });
+  };
+
+  const returnToLobbyHandler = () => {
+    socket.emit("return_to_lobby", roomCode, (response: any) => {
+      if (response.success) {
+        console.log("Returned to lobby");
       } else {
         console.log(response.message);
       }
@@ -167,8 +187,8 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
   return {
     selectedCards,
     setSelectedCards,
+    isChallenged,
     gameInfo,
-    isYourTurn,
     playCards,
     challengeHandler,
     nextRoundHandler,
@@ -177,5 +197,6 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     affectedPlayer,
     winner,
     isWin,
+    returnToLobbyHandler,
   };
 };

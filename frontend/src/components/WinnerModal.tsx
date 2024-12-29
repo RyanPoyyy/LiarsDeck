@@ -31,9 +31,15 @@ interface ModalProps {
   isVisible: boolean;
   player: any;
   isHost: boolean;
+  onClick: () => void;
 }
 
-const WinnerModal: FC<ModalProps> = ({ isVisible, player, isHost }) => {
+const WinnerModal: FC<ModalProps> = ({
+  isVisible,
+  player,
+  isHost,
+  onClick,
+}) => {
   const [show, setShow] = useState(false);
   const [showAnimation, setShowAnimation] = useState(true);
   useEffect(() => {
@@ -55,7 +61,7 @@ const WinnerModal: FC<ModalProps> = ({ isVisible, player, isHost }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <motion.div
-        className="bg-white rounded-lg shadow-lg p-2 w-1/2 h-1/2 flex items-center justify-center"
+        className="bg-white rounded-lg shadow-lg p-2 w-2/3 h-1/2 flex items-center justify-center"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2 }}
@@ -87,8 +93,18 @@ const WinnerModal: FC<ModalProps> = ({ isVisible, player, isHost }) => {
                 Congratulations
               </motion.p>
               <motion.p variants={textVariant} className="text-base text-black">
-                Player {player.playerName} wins!
+                <span className="font-bold">Player </span> {player.playerName}{" "}
+                wins!
               </motion.p>
+              {isHost && (
+                <motion.button
+                  onClick={onClick}
+                  className="create-button mt-6 "
+                  variants={textVariant}
+                >
+                  Return to lobby
+                </motion.button>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

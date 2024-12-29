@@ -8,6 +8,8 @@ import { useGameInfo } from "../hooks/useGameInfo";
 import toast from "react-hot-toast";
 import ToasterBar from "../components/ToasterBar";
 import KilledModal from "../components/killedModal";
+import WinnerModal from "../components/WinnerModal";
+import Instructions from "../components/Instructions";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -28,8 +30,8 @@ const Game = () => {
   const {
     selectedCards,
     setSelectedCards,
+    isChallenged,
     gameInfo,
-    isYourTurn,
     playCards,
     challengeHandler,
     nextRoundHandler,
@@ -38,6 +40,7 @@ const Game = () => {
     affectedPlayer,
     winner,
     isWin,
+    returnToLobbyHandler,
   } = useGameInfo(roomCode, playerId);
 
   // Select cards logic
@@ -69,24 +72,47 @@ const Game = () => {
   };
 
   //   Challenge logic:
-  const [isChallenged, setIsChallenged] = useState(false);
   const handleChallenge = () => {
-    setIsChallenged(true);
+    challengeHandler();
   };
 
+  //   Load instructions logic:
+  const [isInstructions, setIsInstructions] = useState(true);
   useEffect(() => {
-    console.log(selectedCards);
-  }, [selectedCards]);
+    const timer = setTimeout(() => {
+      setIsInstructions(false);
+    }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  // Render instructions:
+  if (isInstructions) {
+    return <Instructions />;
+  }
 
   return (
     <>
       <ToasterBar />
-      <KilledModal
-        isVisible={isGameOver}
-        isKilled={isKilled}
-        affectedPlayer={affectedPlayer}
-        isHost={isHost}
-      />
+
+      {isGameOver && (
+        <KilledModal
+          isVisible={isGameOver}
+          isKilled={isKilled}
+          affectedPlayer={affectedPlayer}
+          isHost={isHost}
+          onClick={nextRoundHandler}
+        />
+      )}
+      {isWin && (
+        <WinnerModal
+          isVisible={isWin}
+          isHost={isHost}
+          player={winner}
+          onClick={returnToLobbyHandler}
+        />
+      )}
       {gameInfo.players.length > 0 && (
         <>
           <HistoryArea
@@ -101,14 +127,16 @@ const Game = () => {
             onClick={handleCardSelection}
             isTurn={gameInfo.players[0].isTurn}
           />
-          <PlayerAction
-            gameInfo={gameInfo}
-            selectedCards={selectedCards}
-            // isTurn={isYourTurn}
-            isTurn={gameInfo.players[0].isTurn}
-            playClick={handlePlay}
-            challengeClick={handleChallenge}
-          />
+          {gameInfo.players[0].isAlive && (
+            <PlayerAction
+              gameInfo={gameInfo}
+              selectedCards={selectedCards}
+              // isTurn={isYourTurn}
+              isTurn={gameInfo.players[0].isTurn}
+              playClick={handlePlay}
+              challengeClick={handleChallenge}
+            />
+          )}
         </>
       )}
     </>
