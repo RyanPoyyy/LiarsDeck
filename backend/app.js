@@ -15,6 +15,7 @@ const io = new Server(server, {
       "http://localhost:5173",
       "http://localhost:3030",
       "https://admin.socket.io",
+      "https://liars-deck-app.vercel.app/",
     ],
     // origin: "*",
     credentials: true,
