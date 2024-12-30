@@ -6,7 +6,7 @@ const { instrument } = require("@socket.io/admin-ui");
 const app = express();
 
 require("dotenv").config();
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 const server = http.createServer(app);
 
 const io = new Server(server, {
