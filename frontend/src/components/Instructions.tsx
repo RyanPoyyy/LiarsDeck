@@ -15,10 +15,12 @@ const Instructions = () => {
     <div className="mt-6 flex w-max text-center justify-center flex-col mx-auto">
       <p className="text-xl font-bold text-white mb-4">Cards in the deck</p>
       <table className="border-spacing-y-5 border-separate">
-        <CardRow cardValue="Queen" quantity={6} isBack={isBack} />
-        <CardRow cardValue="King" quantity={6} isBack={isBack} />
-        <CardRow cardValue="Ace" quantity={6} isBack={isBack} />
-        <CardRow cardValue="Joker" quantity={2} isBack={isBack} />
+        <tbody>
+          <CardRow cardValue="Queen" quantity={6} isBack={isBack} />
+          <CardRow cardValue="King" quantity={6} isBack={isBack} />
+          <CardRow cardValue="Ace" quantity={6} isBack={isBack} />
+          <CardRow cardValue="Joker" quantity={2} isBack={isBack} />
+        </tbody>
       </table>
     </div>
   );
