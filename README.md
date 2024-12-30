@@ -2,6 +2,11 @@
 
 Liar's Deck is a web app game clone and inspired by [Liar's Bar](https://store.steampowered.com/app/3097560/Liars_Bar/). This project is developed for educational purposes, particularly for learning web sockets concepts. All credits to the game goes to the Liar's Bar game.
 
+## Deployments
+The frontend is hostel on Vercel, while the backend web sockets is hosted on Fly.IO
+
+[https://liars-deck-app.vercel.app/](https://liars-deck-app.vercel.app/)
+
 ## Tech stacks
 
 - React
@@ -49,6 +54,22 @@ The goal of the game is to clear your cards as fast as possible without being ca
 - The last player alive is the winner
 
 ## Demo
+Creating and Joining room:
+![create-join-room](https://github.com/user-attachments/assets/311f89d8-0941-4344-a59e-7c276ec523da)
+Starting a game:
+![Start-game](https://github.com/user-attachments/assets/1721de27-8c86-455e-8cd6-738f4c7695ed)
+Playing cards:
+![play-cards](https://github.com/user-attachments/assets/e6071f17-6abb-41bc-a7d4-cf8dc44a3906)
+Challenging players:
+![challenge](https://github.com/user-attachments/assets/8331372a-5dd6-42ee-a2c8-bb2061d31c74)
+Win screen:
+![winner](https://github.com/user-attachments/assets/697fb578-2119-44df-8a10-4c801c7a5de2)
+Room management:
+![kick-player](https://github.com/user-attachments/assets/9d08df86-9326-43d8-ae44-59930f394e38)
+
+
+
+
 
 ## Getting started
 
