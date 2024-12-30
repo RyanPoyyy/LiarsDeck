@@ -10,6 +10,13 @@ Liar's Deck is a web app game clone and inspired by [Liar's Bar](https://store.s
 - Node.js
 - Express.js
 - Socket.IO
+<div align="center">
+  <code><img width="75" src="https://github.com/user-attachments/assets/c387684c-7e46-422e-bd85-462d9f28cbca" alt="express-js" title="Express.JS"/></code>
+  <code><img width="75" src="https://github.com/user-attachments/assets/c8a027eb-43e8-4c5d-9d78-61a5c8bdd281" alt="react-js" title="React.JS"/></code>
+  <code><img width="75" src="https://github.com/user-attachments/assets/4a96de7d-fe07-4d08-a949-abe529568952" alt="node-js" title="Node.JS"/></code>
+  <code><img width="75" src="https://github.com/user-attachments/assets/5f3059c5-319a-4df2-ab5c-e5e8bb9e1dc8" alt="socket.io" title="Socket.IO"/></code>
+  <code><img width="75" src="https://github.com/user-attachments/assets/0d2c821f-0fd0-40bd-9c67-8c674e9ec530" alt="tailwind-css" title="Tailwind-CSS"/></code>
+</div>
 
 ## Features
 
