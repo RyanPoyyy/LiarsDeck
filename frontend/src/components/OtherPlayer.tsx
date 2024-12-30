@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import Lives from "./Lives";
 import OtherCard from "./OtherCard";
 interface Props {

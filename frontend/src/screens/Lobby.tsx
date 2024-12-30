@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ToasterBar from "../components/ToasterBar";
 import { useRoomInfo } from "../hooks/useRoomInfo";
 import Loading from "../components/Loading";
@@ -26,9 +26,7 @@ const Lobby = () => {
   );
   const { kickPlayer } = useKickPlayer();
   const { leaveRoom } = useLeaveRoom();
-  const { startGame, isStartLoading } = useStartGame(
-    sessionStorage.getItem("roomCode") || ""
-  );
+  const { startGame } = useStartGame(sessionStorage.getItem("roomCode") || "");
 
   const copyToClipboard = () => {
     if (roomCode) {
@@ -45,7 +43,10 @@ const Lobby = () => {
         sessionStorage.getItem("roomCode") || "",
         playerId,
         (success, message) => {
-          return;
+          if (success) {
+            console.log(message);
+            return;
+          }
         }
       );
     }
@@ -57,6 +58,7 @@ const Lobby = () => {
         sessionStorage.getItem("roomCode") || "",
         (success, message) => {
           if (success) {
+            console.log(message);
             sessionStorage.removeItem("roomCode");
             sessionStorage.removeItem("isHost");
             navigate("/");

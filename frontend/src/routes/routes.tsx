@@ -1,6 +1,5 @@
 import { Route, Routes, useLocation } from "react-router";
 import App from "../App";
-import Test from "../screens/Test";
 import Home from "../screens/Home";
 import { AnimatePresence } from "framer-motion";
 import CreateGame from "../screens/CreateGame";
@@ -21,7 +20,7 @@ const Screens = () => {
           <Route path="/lobby/" element={<Lobby />} />
           <Route path="/game/" element={<Game />} />
           <Route path="/app" element={<App />} />
-          <Route path="/test" element={<Test />} />
+          {/* <Route path="/test" element={<Test />} /> */}
         </Routes>
       </AnimatePresence>
     </>

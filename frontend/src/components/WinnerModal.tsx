@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Celebration from "./Celebration";
 import { AnimatePresence, motion } from "framer-motion";
 

@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import socket from "./socket";
-import { useNavigate } from "react-router-dom";
 
 export const useStartGame = (roomCode: string) => {
-  const navigate = useNavigate();
   const [isStartLoading, setIsStartLoading] = useState(false);
 
   const startGame = (

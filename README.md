@@ -1,6 +1,6 @@
 # Liar's Deck game clone
 
-Liar's Deck is a web app game clone and inspired by [Liar's Deck](https://store.steampowered.com/app/3097560/Liars_Bar/). This project is developed for educational purposes, particularly for learning web sockets concepts. All credits to the game goes to the Liar's Bar game.
+Liar's Deck is a web app game clone and inspired by [Liar's Bar](https://store.steampowered.com/app/3097560/Liars_Bar/). This project is developed for educational purposes, particularly for learning web sockets concepts. All credits to the game goes to the Liar's Bar game.
 
 ## Tech stacks
 

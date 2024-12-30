@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import HistoryArea from "../components/HistoryArea";
 import RuleText from "../components/RuleText";
@@ -7,7 +7,7 @@ import PlayerAction from "../components/PlayerAction";
 import { useGameInfo } from "../hooks/useGameInfo";
 import toast from "react-hot-toast";
 import ToasterBar from "../components/ToasterBar";
-import KilledModal from "../components/killedModal";
+import KilledModal from "../components/KilledModal";
 import WinnerModal from "../components/WinnerModal";
 import Instructions from "../components/Instructions";
 

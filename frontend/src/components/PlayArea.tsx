@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import Player from "./Player";
 import OtherPlayer from "./OtherPlayer";
 
@@ -13,8 +13,8 @@ interface Props {
 
 const PlayArea: FC<Props> = ({
   playerObjs,
-  turnIndex,
-  currentPlayer,
+  // turnIndex,
+  // currentPlayer,
   selectedCards,
   onClick,
   isTurn,

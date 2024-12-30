@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Barrel from "./Barrel";
 import { AnimatePresence, motion } from "framer-motion";
-import { text } from "framer-motion/client";
 
 const containerVariant = {
   initial: {

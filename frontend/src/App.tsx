@@ -121,13 +121,13 @@ function App() {
         selectedCards={selectedCards}
         onClick={handleCardSelection}
       /> */}
-      <PlayArea
+      {/* <PlayArea
         playerObjs={playerObjects}
         turnIndex={0}
         currentPlayer={1}
         selectedCards={selectedCards}
         onClick={handleCardSelection}
-      />
+      /> */}
       <PlayerAction
         gameInfo={{ actions: [] }}
         selectedCards={selectedCards}

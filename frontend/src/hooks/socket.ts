@@ -2,7 +2,11 @@ import { io, Socket } from "socket.io-client";
 
 // const SOCKET_URL = "http://localhost:3001";
 // const SOCKET_URL = "http://192.168.0.122:3001";
-const SOCKET_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
+let SOCKET_URL = `${window.location.protocol}//${window.location.hostname}:3001`;
+if (import.meta.env.VITE_API_URL) {
+  SOCKET_URL = `${import.meta.env.VITE_API_URL}`;
+}
+console.log(SOCKET_URL);
 
 const socket: Socket = io(SOCKET_URL, { transports: ["websocket"] });
 

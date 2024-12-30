@@ -1,5 +1,4 @@
-import React, { FC } from "react";
-import OtherCard from "./OtherCard";
+import { FC } from "react";
 import ChallengedCard from "./ChallengedCard";
 
 interface Props {
