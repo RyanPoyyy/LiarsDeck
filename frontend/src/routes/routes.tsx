@@ -6,6 +6,7 @@ import CreateGame from "../screens/CreateGame";
 import JoinGame from "../screens/JoinGame";
 import Lobby from "../screens/Lobby";
 import Game from "../screens/Game";
+import Test from "../screens/Test";
 
 const Screens = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const Screens = () => {
           <Route path="/lobby/" element={<Lobby />} />
           <Route path="/game/" element={<Game />} />
           <Route path="/app" element={<App />} />
-          {/* <Route path="/test" element={<Test />} /> */}
+          <Route path="/test" element={<Test />} />
         </Routes>
       </AnimatePresence>
     </>

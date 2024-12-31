@@ -10,6 +10,7 @@ import ToasterBar from "../components/ToasterBar";
 import KilledModal from "../components/KilledModal";
 import WinnerModal from "../components/WinnerModal";
 import Instructions from "../components/Instructions";
+import StartRound from "../components/StartRound";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const Game = () => {
     selectedCards,
     setSelectedCards,
     isChallenged,
+    showStartCard,
     gameInfo,
     playCards,
     challengeHandler,
@@ -90,6 +92,10 @@ const Game = () => {
   // Render instructions:
   if (isInstructions) {
     return <Instructions />;
+  }
+
+  if (showStartCard) {
+    return <StartRound liarCard={gameInfo.liarCard} />;
   }
 
   return (

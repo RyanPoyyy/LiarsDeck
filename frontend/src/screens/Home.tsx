@@ -87,8 +87,8 @@ const Home = () => {
             Liar's Deck is a 4 player game. The deck contains 6x{" "}
             <span className="text-blue-500 font-bold">Queens</span>, 6x{" "}
             <span className="text-blue-500 font-bold">Kings</span>, 6x{" "}
-            <span className="text-blue-500 font-bold">Ace</span> and 2x{" "}
-            <span className="text-blue-500 font-bold">Joker</span>
+            <span className="text-blue-500 font-bold">Aces</span> and 2x{" "}
+            <span className="text-blue-500 font-bold">Jokers</span>
           </p>
           <br />
           <p className="text-left">
@@ -101,29 +101,19 @@ const Home = () => {
           <p className="text-left">
             At the start of the round, a{" "}
             <span className="text-blue-500">liar card</span> will be determined,
-            which can be either a Queen, King or Ace. the{" "}
-            <span className="text-blue-500">6 chambers</span>
+            which can be either a Queen, King or Ace.
+          </p>
+          <br />
+
+          <p className="text-left">
+            Each turn, players can choose to do either of the following:
           </p>
           <br />
           <p className="text-left">
-            Each player will take turns placing{" "}
-            <span className="text-blue-500">1-3 cards</span>. The player can
-            play any cards from their hand, with{" "}
-            <span className="text-blue-500">Joker</span> being substituted for
-            any value.
-          </p>
-          <br />
-          <p className="text-left">
-            Each turn, players can choose to do the following:
-          </p>
-          <br />
-          <p className="text-left">
-            <span className="font-bold">1. </span>Believe the previous player's
-            play. They can then play from{" "}
-            <span className="text-blue-500">1-3 cards</span> and can choose to
-            play any cards from their hand, with{" "}
-            <span className="text-blue-500">Joker</span> being substituted for
-            any value.
+            <span className="font-bold">1. </span> Believe the previous player’s
+            play and play <span className="text-blue-500">1-3 cards</span> from
+            their own hand. The <span className="text-blue-500">Joker</span> can
+            be substituted for any value.
           </p>
           <br />
           <p className="text-left">
@@ -134,10 +124,17 @@ const Home = () => {
         </div>
         <br />
         <p className="text-left">
+          The <span className="text-blue-500">death roulette </span>means firing
+          the gun at oneself. If it's an empty chamber, the game proceeds to the
+          next round; if successful, the player is eliminated, and the game
+          continues to the next round
+        </p>
+        <br />
+        <p className="text-left">
           If the challenge is <span className="text-blue-500">successful </span>
-          , the previous player takes a shot at the death roulette. Otherwise,
+          , the previous player participates in the death roulette. Otherwise,
           for a <span className="text-blue-500">failed challenge</span>, the
-          challenger will take a shot at the death roulette.
+          challenger will participate in the death roulette.
         </p>
         <br />
         <p className="text-left">
@@ -147,12 +144,7 @@ const Home = () => {
           take a shot at the death roulette.
         </p>
         <br />
-        <p className="text-left">
-          The <span className="text-blue-500">death roulette </span>means firing
-          the gun at oneself. If it's an empty chamber, the game proceeds to the
-          next round; if successful, the player is eliminated, and the game
-          continues to the next round
-        </p>
+
         <br />
         <p className="text-left mb-44">
           The game continues until only one player remains, who becomes the

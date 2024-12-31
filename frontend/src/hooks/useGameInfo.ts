@@ -36,6 +36,7 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
   const navigate = useNavigate();
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [isChallenged, setIsChallenged] = useState(false);
+  const [showStartCard, setShowStartCard] = useState(true);
 
   const [gameInfo, setGameInfo] = useState<GameInfo>({
     currentPlayerId: "",
@@ -54,9 +55,12 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
   const [winner, setWinner] = useState();
   const [isWin, setIsWin] = useState<boolean>(false);
 
+  // Initial show instruction page 5+2 seconds:
   useEffect(() => {
-    console.log(isChallenged);
-  }, [isChallenged]);
+    setTimeout(() => {
+      setShowStartCard(false);
+    }, 7000);
+  }, []);
 
   // Fetching game info:
   useEffect(() => {
@@ -102,6 +106,11 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
       setIsChallenged(false);
       gameState.players = remapGameData(gameState, playerId);
       setGameInfo(gameState);
+      // Need to show the instructions for each new round (excluding first round)
+      setShowStartCard(true);
+      setTimeout(() => {
+        setShowStartCard(false);
+      }, 3000);
     });
 
     // listening for winners updates:
@@ -188,6 +197,7 @@ export const useGameInfo = (roomCode: string, playerId: string) => {
     selectedCards,
     setSelectedCards,
     isChallenged,
+    showStartCard,
     gameInfo,
     playCards,
     challengeHandler,
